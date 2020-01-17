@@ -62,6 +62,6 @@ subscriptions model =
 getDashboardData : Cmd Msg
 getDashboardData =
     Http.get
-        { url = "http://beta.inhouse.gg/active_tournament"
+        { url = "http://www.inhouse.gg/active_tournament"
         , expect = Http.expectJson GotDashboard Types.dashboardDecoder
         }

@@ -14,6 +14,10 @@ cdnUrl =
     "https://ddragon.leagueoflegends.com/cdn/9.24.2/img/"
 
 
+opggUrl =
+    "https://opgg-static.akamaized.net/images/medals/"
+
+
 fontTag : Html Msg
 fontTag =
     Html.node "link"
@@ -30,6 +34,10 @@ styleTag =
         , A.rel "stylesheet"
         ]
         []
+
+
+
+-- Make dynamic
 
 
 inHouseHeader : Html Msg
@@ -57,16 +65,21 @@ imageForChampion rawChampion =
     cdnUrl ++ "champion/" ++ champion ++ ".png"
 
 
-championImg : String -> Html Msg
-championImg champion =
+squareImg : String -> Int -> Html Msg
+squareImg img size =
     let
-        championImage =
-            imageForChampion champion
+        height =
+            String.fromInt size ++ "px"
     in
     div
-        [ A.style "height" "60px"
+        [ A.style "height" height
         ]
-        [ Html.img [ A.src championImage, A.width 60, A.height 60 ] [] ]
+        [ Html.img [ A.src img, A.width size, A.height size ] [] ]
+
+
+championImg : String -> Html Msg
+championImg champion =
+    squareImg (imageForChampion champion) 60
 
 
 viewResult : Types.Match -> Html Msg
@@ -81,6 +94,33 @@ viewResult match =
         [ text match.win ]
 
 
+rankName : Types.Rank -> String
+rankName rank =
+    case rank.tier of
+        Types.NoTier ->
+            "default"
+
+        _ ->
+            let
+                tier =
+                    String.toLower (Types.tierToString rank.tier)
+
+                division =
+                    Types.divisionNumber rank.division
+            in
+            tier ++ "_" ++ division
+
+
+imageForRank : Types.Rank -> String
+imageForRank rank =
+    opggUrl ++ rankName rank ++ ".png"
+
+
+rankImg : Types.Rank -> Html Msg
+rankImg rank =
+    squareImg (imageForRank rank) 60
+
+
 imageForSummoner : String -> String
 imageForSummoner summonerSpell =
     cdnUrl ++ "spell/" ++ summonerSpell ++ ".png"
@@ -88,14 +128,7 @@ imageForSummoner summonerSpell =
 
 summonerImg : String -> Html Msg
 summonerImg summonerSpell =
-    let
-        spellImg =
-            imageForSummoner summonerSpell
-    in
-    div
-        [ A.style "height" "30px"
-        ]
-        [ Html.img [ A.src spellImg, A.width 30, A.height 30 ] [] ]
+    squareImg (imageForSummoner summonerSpell) 30
 
 
 summonerImgs : Types.Match -> Html Msg
@@ -219,6 +252,7 @@ viewRank rank =
         , A.style "width" "140px"
         ]
         [ viewLeague rank
+        , rankImg rank
         , viewRankStanding rank
         ]
 
@@ -374,7 +408,7 @@ view model =
         , A.style "display" "flex"
         , A.style "flexDirection" "column"
         , A.style "margin" "0 auto"
-        , A.style "width" "844px"
+        , A.style "width" "min-content"
         ]
         [ fontTag
         , styleTag
