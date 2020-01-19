@@ -360,6 +360,7 @@ viewSummonerName : Types.Summoner -> Html Msg
 viewSummonerName summoner =
     div
         [ A.class "summoner"
+
         --, A.style "padding" "5px"
         ]
         [ text summoner.name ]
