@@ -119,7 +119,7 @@ rankName rank =
                     String.toLower (Types.tierToString rank.tier)
 
                 division =
-                    Types.divisionNumber rank.division
+                    Types.divisionToString rank.division
             in
             tier ++ "_" ++ division
 

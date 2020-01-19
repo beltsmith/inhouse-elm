@@ -234,6 +234,28 @@ divisionNumber division =
             ""
 
 
+divisionNumber : Division -> String
+divisionNumber division =
+    case division of
+        One ->
+            "1"
+
+        Two ->
+            "2"
+
+        Three ->
+            "3"
+
+        Four ->
+            "4"
+
+        Five ->
+            "5"
+
+        NoDivision ->
+            ""
+
+
 divisionDecoder : Decoder Division
 divisionDecoder =
     Decode.string
