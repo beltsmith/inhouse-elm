@@ -194,19 +194,41 @@ divisionToString : Division -> String
 divisionToString division =
     case division of
         One ->
-            "I"
+            "1"
 
         Two ->
-            "II"
+            "2"
 
         Three ->
-            "III"
+            "3"
 
         Four ->
-            "IV"
+            "4"
 
         Five ->
-            "V"
+            "5"
+
+        NoDivision ->
+            ""
+
+
+divisionNumber : Division -> String
+divisionNumber division =
+    case division of
+        One ->
+            "1"
+
+        Two ->
+            "2"
+
+        Three ->
+            "3"
+
+        Four ->
+            "4"
+
+        Five ->
+            "5"
 
         NoDivision ->
             ""
