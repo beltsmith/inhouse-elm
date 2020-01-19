@@ -255,6 +255,7 @@ sortPlayersByRank =
 
 type alias Dashboard =
     { players : List Player
+    , name : String
     }
 
 
@@ -262,3 +263,4 @@ dashboardDecoder : Decoder Dashboard
 dashboardDecoder =
     Decode.succeed Dashboard
         |> required "players" (Decode.list playerDecoder)
+        |> required "Name" Decode.string

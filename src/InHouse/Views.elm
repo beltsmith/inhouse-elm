@@ -41,12 +41,12 @@ styleTag =
 -- Make dynamic
 
 
-inHouseHeader : Html Msg
-inHouseHeader =
+inHouseHeader : String -> Html Msg
+inHouseHeader name =
     h2
         [ A.style "textAlign" "center"
         ]
-        [ text "InHouse Leaderboard (NKU)"
+        [ text ("InHouse Leaderboard " ++ name)
         ]
 
 
@@ -460,7 +460,6 @@ view model =
         ]
         [ fontTag
         , styleTag
-        , inHouseHeader
         , viewModel model
         ]
 
@@ -477,4 +476,7 @@ viewModel model =
             text "Loading..."
 
         Success dashboard ->
-            viewDashboard dashboard
+            div []
+                [ inHouseHeader dashboard.name
+                , viewDashboard dashboard
+                ]
