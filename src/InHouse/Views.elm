@@ -37,10 +37,6 @@ styleTag =
         []
 
 
-
--- Make dynamic
-
-
 inHouseHeader : String -> Html Msg
 inHouseHeader name =
     h2
