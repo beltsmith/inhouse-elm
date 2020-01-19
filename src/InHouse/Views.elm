@@ -77,6 +77,7 @@ circleImg img size =
         ]
         [ Html.img [ A.src img, A.width size, A.height size, A.style "borderRadius" "50%" ] [] ]
 
+
 squareImg : String -> Int -> Html Msg
 squareImg img size =
     let
@@ -87,6 +88,7 @@ squareImg img size =
         [ A.style "height" height
         ]
         [ Html.img [ A.src img, A.width size, A.height size ] [] ]
+
 
 championImg : String -> Html Msg
 championImg champion =
@@ -128,7 +130,7 @@ imageForRank rank =
 
 
 rankImg : Types.Rank -> Html Msg
-rankImg rank =  
+rankImg rank =
     div
         [ A.style "display" "flex"
         , A.style "justifyContent" "center"
@@ -136,7 +138,8 @@ rankImg rank =
         , A.style "alignItems" "center"
         , A.style "fontWeight" "bold"
         ]
-        [squareImg (imageForRank rank) 125]
+        [ squareImg (imageForRank rank) 125 ]
+
 
 imageForSummoner : String -> String
 imageForSummoner summonerSpell =
@@ -181,6 +184,7 @@ viewMatch match =
         ]
         [ championImg match.champion
         , summonerImgs match
+
         --, viewResult match
         ]
 
@@ -188,11 +192,14 @@ viewMatch match =
 matchHistory =
     10
 
-matchesPerRow = 
+
+matchesPerRow =
     10
 
-rowsToShow = 
+
+rowsToShow =
     2
+
 
 viewMatchList : Types.MatchList -> Html Msg
 viewMatchList matchList =
@@ -206,6 +213,7 @@ viewMatchList matchList =
 tierClass : String -> String
 tierClass tier =
     "tier-" ++ String.toLower tier
+
 
 viewRankStanding : Types.Rank -> Html Msg
 viewRankStanding rank =
@@ -225,7 +233,7 @@ viewMatches : Types.MatchList -> Html Msg
 viewMatches matchList =
     let
         matchesToShow =
-            List.take(rowsToShow * matchesPerRow) matchList
+            List.take (rowsToShow * matchesPerRow) matchList
     in
     div
         [ A.class "match-lists"
@@ -266,7 +274,7 @@ viewLosses rank =
 
 viewWinRate : Types.Rank -> Html Msg
 viewWinRate rank =
-        div
+    div
         [ A.style "display" "inline-flex"
         , A.style "padding" "5px"
         , A.style "justifyContent" "center"
@@ -274,7 +282,7 @@ viewWinRate rank =
         ]
         [ div
             []
-            [ text ( "(" ++ String.fromInt rank.winRate ++ "%)") ]
+            [ text ("(" ++ String.fromInt rank.winRate ++ "%)") ]
         ]
 
 
