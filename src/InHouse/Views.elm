@@ -7,6 +7,7 @@ import InHouse.Colors as Colors
 import InHouse.Model exposing (Model(..), Msg(..))
 import InHouse.Types as Types
 import List
+import List.Extra exposing (greedyGroupsOf)
 import Regex
 
 
@@ -65,6 +66,18 @@ imageForChampion rawChampion =
     cdnUrl ++ "champion/" ++ champion ++ ".png"
 
 
+circleImg : String -> Int -> Html Msg
+circleImg img size =
+    let
+        height =
+            String.fromInt size ++ "px"
+    in
+    div
+        [ A.style "height" height
+        ]
+        [ Html.img [ A.src img, A.width size, A.height size, A.style "borderRadius" "50%" ] [] ]
+
+
 squareImg : String -> Int -> Html Msg
 squareImg img size =
     let
@@ -79,7 +92,7 @@ squareImg img size =
 
 championImg : String -> Html Msg
 championImg champion =
-    squareImg (imageForChampion champion) 60
+    circleImg (imageForChampion champion) 70
 
 
 viewResult : Types.Match -> Html Msg
@@ -106,7 +119,7 @@ rankName rank =
                     String.toLower (Types.tierToString rank.tier)
 
                 division =
-                    Types.divisionNumber rank.division
+                    Types.divisionToString rank.division
             in
             tier ++ "_" ++ division
 
@@ -118,7 +131,14 @@ imageForRank rank =
 
 rankImg : Types.Rank -> Html Msg
 rankImg rank =
-    squareImg (imageForRank rank) 60
+    div
+        [ A.style "display" "flex"
+        , A.style "justifyContent" "center"
+        , A.style "flexGrow" "1"
+        , A.style "alignItems" "center"
+        , A.style "fontWeight" "bold"
+        ]
+        [ squareImg (imageForRank rank) 125 ]
 
 
 imageForSummoner : String -> String
@@ -128,7 +148,7 @@ imageForSummoner summonerSpell =
 
 summonerImg : String -> Html Msg
 summonerImg summonerSpell =
-    squareImg (imageForSummoner summonerSpell) 30
+    squareImg (imageForSummoner summonerSpell) 35
 
 
 summonerImgs : Types.Match -> Html Msg
@@ -164,12 +184,21 @@ viewMatch match =
         ]
         [ championImg match.champion
         , summonerImgs match
-        , viewResult match
+
+        --, viewResult match
         ]
 
 
 matchHistory =
     10
+
+
+matchesPerRow =
+    10
+
+
+rowsToShow =
+    2
 
 
 viewMatchList : Types.MatchList -> Html Msg
@@ -178,12 +207,116 @@ viewMatchList matchList =
         [ A.class "match-list"
         , A.style "display" "inline-flex"
         ]
-        (List.map viewMatch (List.take matchHistory matchList))
+        (List.map viewMatch matchList)
 
 
 tierClass : String -> String
 tierClass tier =
     "tier-" ++ String.toLower tier
+
+
+viewRankStanding : Types.Rank -> Html Msg
+viewRankStanding rank =
+    div
+        [ A.class "standing"
+        , A.style "padding" "5px"
+        , A.style "display" "inline-flex"
+        , A.style "justifyContent" "center"
+        , A.style "marginTop" "auto"
+        ]
+        [ viewWins rank
+        , viewLosses rank
+        ]
+
+
+viewMatches : Types.MatchList -> Html Msg
+viewMatches matchList =
+    let
+        matchesToShow =
+            List.take (rowsToShow * matchesPerRow) matchList
+    in
+    div
+        [ A.class "match-lists"
+        , A.style "display" "flex"
+        , A.style "flexDirection" "column"
+        ]
+    <|
+        List.map viewMatchList (greedyGroupsOf matchesPerRow matchesToShow)
+
+
+viewWins : Types.Rank -> Html Msg
+viewWins rank =
+    inlineFlex
+        [ div
+            []
+            [ text (String.fromInt rank.wins) ]
+        , div
+            [ A.style "color" Colors.green
+            , A.style "paddingRight" "5px"
+            ]
+            [ text "W " ]
+        ]
+
+
+viewLosses : Types.Rank -> Html Msg
+viewLosses rank =
+    inlineFlex
+        [ div
+            []
+            [ text (String.fromInt rank.losses) ]
+        , div
+            [ A.style "color" Colors.red
+            , A.style "paddingRight" "5px"
+            ]
+            [ text "L " ]
+        ]
+
+
+viewWinRate : Types.Rank -> Html Msg
+viewWinRate rank =
+    div
+        [ A.style "display" "inline-flex"
+        , A.style "padding" "5px"
+        , A.style "justifyContent" "center"
+        , A.style "marginBottom" "auto"
+        ]
+        [ div
+            []
+            [ text ("(" ++ String.fromInt rank.winRate ++ "%)") ]
+        ]
+
+
+inlineFlex =
+    div [ A.style "display" "inline-flex" ]
+
+
+viewLeague : Types.Rank -> Html Msg
+viewLeague rank =
+    div
+        [ A.style "display" "inline-flex"
+        , A.style "padding" "5px"
+        , A.style "justifyContent" "center"
+        , A.style "marginBottom" "auto"
+        ]
+        [ viewTier rank.tier
+        , viewDivision rank.division
+        , viewLeaguePoints rank.leaguePoints
+        ]
+
+
+viewRank : Types.Rank -> Html Msg
+viewRank rank =
+    div
+        [ A.style "display" "flex"
+        , A.style "flexDirection" "column"
+        , A.style "borderRight" "1px solid"
+        , A.style "width" "175px"
+        ]
+        [ viewRankStanding rank
+        , viewWinRate rank
+        , rankImg rank
+        , viewLeague rank
+        ]
 
 
 viewTier : Types.Tier -> Html Msg
@@ -222,92 +355,7 @@ viewDivision division =
 viewLeaguePoints : Int -> Html Msg
 viewLeaguePoints leaguePoints =
     div []
-        [ text (String.fromInt leaguePoints ++ "LP") ]
-
-
-inlineFlex =
-    div [ A.style "display" "inline-flex" ]
-
-
-viewLeague : Types.Rank -> Html Msg
-viewLeague rank =
-    div
-        [ A.style "display" "inline-flex"
-        , A.style "padding" "5px"
-        , A.style "justifyContent" "space-evenly"
-        , A.style "marginTop" "auto"
-        ]
-        [ viewTier rank.tier
-        , viewDivision rank.division
-        , viewLeaguePoints rank.leaguePoints
-        ]
-
-
-viewRank : Types.Rank -> Html Msg
-viewRank rank =
-    div
-        [ A.style "display" "flex"
-        , A.style "flexDirection" "column"
-        , A.style "borderRight" "1px solid"
-        , A.style "width" "140px"
-        ]
-        [ viewLeague rank
-        , rankImg rank
-        , viewRankStanding rank
-        ]
-
-
-viewWins : Types.Rank -> Html Msg
-viewWins rank =
-    inlineFlex
-        [ div
-            []
-            [ text (String.fromInt rank.wins) ]
-        , div
-            [ A.style "color" Colors.green
-            ]
-            [ text "W" ]
-        ]
-
-
-viewLosses : Types.Rank -> Html Msg
-viewLosses rank =
-    inlineFlex
-        [ div
-            []
-            [ text (String.fromInt rank.losses) ]
-        , div
-            [ A.style "color" Colors.red
-            ]
-            [ text "L" ]
-        ]
-
-
-viewWinRate : Types.Rank -> Html Msg
-viewWinRate rank =
-    inlineFlex
-        [ div
-            []
-            [ text (String.fromInt rank.winRate) ]
-        , div
-            []
-            [ text "% WR" ]
-        ]
-
-
-viewRankStanding : Types.Rank -> Html Msg
-viewRankStanding rank =
-    div
-        [ A.class "standing"
-        , A.style "padding" "5px"
-        , A.style "display" "inline-flex"
-        , A.style "justifyContent" "space-evenly"
-        , A.style "marginBottom" "auto"
-        ]
-        [ viewWins rank
-        , viewLosses rank
-        , viewWinRate rank
-        ]
+        [ text ("(" ++ String.fromInt leaguePoints ++ " LP)") ]
 
 
 viewSummonerName : Types.Summoner -> Html Msg
@@ -347,7 +395,7 @@ viewPlayerHeader : Int -> Types.Player -> Html Msg
 viewPlayerHeader positionInt player =
     let
         position =
-            String.fromInt (positionInt + 1)
+            String.fromInt (positionInt + 1) ++ ")"
     in
     div
         [ A.class "playerHeader"
@@ -381,7 +429,7 @@ viewPlayer position player =
             , A.style "flexDirection" "row"
             ]
             [ viewRank player.rank
-            , viewMatchList player.matchList
+            , viewMatches player.matchList
             ]
         ]
 
