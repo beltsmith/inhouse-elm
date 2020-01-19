@@ -37,6 +37,10 @@ styleTag =
         []
 
 
+
+-- Make dynamic
+
+
 inHouseHeader : Html Msg
 inHouseHeader =
     h2
@@ -134,7 +138,7 @@ rankImg rank =
         , A.style "alignItems" "center"
         , A.style "fontWeight" "bold"
         ]
-        [ squareImg (imageForRank rank) 150 ]
+        [ squareImg (imageForRank rank) 125 ]
 
 
 imageForSummoner : String -> String
@@ -161,7 +165,7 @@ viewMatch match =
         resultColor =
             case match.win of
                 "Win" ->
-                    Colors.blue
+                    Colors.green
 
                 "Loss" ->
                     Colors.red
@@ -183,6 +187,10 @@ viewMatch match =
 
         --, viewResult match
         ]
+
+
+matchHistory =
+    10
 
 
 matchesPerRow =
@@ -211,7 +219,7 @@ viewRankStanding : Types.Rank -> Html Msg
 viewRankStanding rank =
     div
         [ A.class "standing"
-        , A.style "paddingTop" "5px"
+        , A.style "padding" "5px"
         , A.style "display" "inline-flex"
         , A.style "justifyContent" "center"
         , A.style "marginTop" "auto"
@@ -231,7 +239,6 @@ viewMatches matchList =
         [ A.class "match-lists"
         , A.style "display" "flex"
         , A.style "flexDirection" "column"
-        , A.style "padding" "5px"
         ]
     <|
         List.map viewMatchList (greedyGroupsOf matchesPerRow matchesToShow)
@@ -241,14 +248,11 @@ viewWins : Types.Rank -> Html Msg
 viewWins rank =
     inlineFlex
         [ div
-            [ A.style "color" "#1f8ecd"
-            , A.style "paddingTop" "5px"
-            ]
+            []
             [ text (String.fromInt rank.wins) ]
         , div
-            [ A.style "color" Colors.blue
+            [ A.style "color" Colors.green
             , A.style "paddingRight" "5px"
-            , A.style "paddingTop" "5px"
             ]
             [ text "W " ]
         ]
@@ -258,13 +262,11 @@ viewLosses : Types.Rank -> Html Msg
 viewLosses rank =
     inlineFlex
         [ div
-            [ A.style "color" "#ee5a52"
-            , A.style "paddingTop" "5px"
-            ]
+            []
             [ text (String.fromInt rank.losses) ]
         , div
             [ A.style "color" Colors.red
-            , A.style "paddingTop" "5px"
+            , A.style "paddingRight" "5px"
             ]
             [ text "L " ]
         ]
@@ -274,7 +276,7 @@ viewWinRate : Types.Rank -> Html Msg
 viewWinRate rank =
     div
         [ A.style "display" "inline-flex"
-        , A.style "paddingTop" "3px"
+        , A.style "padding" "5px"
         , A.style "justifyContent" "center"
         , A.style "marginBottom" "auto"
         ]
@@ -292,7 +294,7 @@ viewLeague : Types.Rank -> Html Msg
 viewLeague rank =
     div
         [ A.style "display" "inline-flex"
-        , A.style "padding" "11px"
+        , A.style "padding" "5px"
         , A.style "justifyContent" "center"
         , A.style "marginBottom" "auto"
         ]
@@ -360,7 +362,7 @@ viewSummonerName : Types.Summoner -> Html Msg
 viewSummonerName summoner =
     div
         [ A.class "summoner"
-        --, A.style "padding" "5px"
+        , A.style "padding" "5px"
         ]
         [ text summoner.name ]
 
@@ -384,7 +386,7 @@ viewPosition position =
 
 viewPlayerName : Types.Player -> Html Msg
 viewPlayerName player =
-    div [ A.style "paddingLeft" "10px" ]
+    div [ A.style "paddingLeft" "5px" ]
         [ text player.summoner.name
         ]
 

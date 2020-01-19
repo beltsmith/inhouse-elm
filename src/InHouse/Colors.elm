@@ -6,7 +6,7 @@ darkGrey =
 
 
 lightGrey =
-    "#545454"
+    "#4a4a4a"
 
 
 background =
@@ -14,7 +14,7 @@ background =
 
 
 offWhite =
-    "#f2f2f2"
+    "#ebdbb2"
 
 
 text =
@@ -22,8 +22,8 @@ text =
 
 
 red =
-    "#ee5a52"
+    "#fb4934"
 
 
-blue =
-    "#1f8ecd"
+green =
+    "#8ec07c"
