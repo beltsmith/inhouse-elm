@@ -42,7 +42,16 @@ inHouseHeader name =
     h2
         [ A.style "textAlign" "center"
         ]
-        [ text ("InHouse Leaderboard " ++ name)
+        [ text "InHouse Leaderboard"
+        ]
+
+
+secondHeader : String -> Html Msg
+secondHeader name =
+    h2
+        [ A.style "textAlign" "center"
+        ]
+        [ text name
         ]
 
 
@@ -477,5 +486,6 @@ viewModel model =
         Success dashboard ->
             div []
                 [ inHouseHeader dashboard.name
+                , secondHeader dashboard.name
                 , viewDashboard dashboard
                 ]
