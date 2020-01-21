@@ -80,7 +80,7 @@ circleImg img size =
     div
         [ A.style "height" height
         ]
-        [ Html.img [ A.src img, A.width size, A.height size, A.style "borderRadius" "50%" ] [] ]
+        [ Html.img [ A.src img, A.width size, A.height size, A.style "borderRadius" "10%" ] [] ]
 
 
 squareImg : String -> Int -> Html Msg
@@ -97,7 +97,9 @@ squareImg img size =
 
 championImg : String -> Html Msg
 championImg champion =
-    circleImg (imageForChampion champion) 70
+    div
+        [ A.style "position" "relative" ]
+        [ circleImg (imageForChampion champion) 70 ]
 
 
 viewResult : Types.Match -> Html Msg
@@ -143,7 +145,7 @@ rankImg rank =
         , A.style "alignItems" "center"
         , A.style "fontWeight" "bold"
         ]
-        [ squareImg (imageForRank rank) 150 ]
+        [ squareImg (imageForRank rank) 100 ]
 
 
 imageForSummoner : String -> String
@@ -151,17 +153,38 @@ imageForSummoner summonerSpell =
     cdnUrl ++ "spell/" ++ summonerSpell ++ ".png"
 
 
-summonerImg : String -> Html Msg
-summonerImg summonerSpell =
-    squareImg (imageForSummoner summonerSpell) 35
+
+{- summonerImg : String -> Html Msg
+   summonerImg summonerSpell =
+       squareImg (imageForSummoner summonerSpell) 17
 
 
-summonerImgs : Types.Match -> Html Msg
-summonerImgs match =
-    inlineFlex
-        [ summonerImg match.spell1
-        , summonerImg match.spell2
-        ]
+   summonerImgs : Types.Match -> Html Msg
+   summonerImgs match =
+       let
+           summoner1 =
+               summonerImg match.spell1
+
+           summoner2 =
+               summonerImg match.spell2
+       in
+       div
+           [ A.style "display" "flex"
+           , A.style "position" "absolute"
+           ]
+           [ div
+               [ A.class "left-summoner"
+               , A.style "paddingRight" "36px"
+               , A.style "paddingTop" "54px"
+               ]
+               [ summoner1 ]
+           , div
+               [ A.class "right-summoner"
+               , A.style "paddingTop" "54px"
+               ]
+               [ summoner2 ]
+           ]
+-}
 
 
 viewMatch : Types.Match -> Html Msg
@@ -186,10 +209,12 @@ viewMatch match =
         , A.style "display" "flex"
         , A.style "flexDirection" "column"
         , A.style "justifyContent" "center"
+        , A.style "padding" "3px"
+        , A.style "borderRadius" "10%"
         ]
         [ championImg match.champion
-        , summonerImgs match
 
+        --, summonerImgs match
         --, viewResult match
         ]
 
@@ -240,7 +265,7 @@ viewMatches matchList =
         [ A.class "match-lists"
         , A.style "display" "flex"
         , A.style "flexDirection" "column"
-        , A.style "padding" "5px"
+        , A.style "padding" "10px"
         ]
     <|
         List.map viewMatchList (greedyGroupsOf matchesPerRow matchesToShow)
@@ -301,7 +326,7 @@ viewLeague : Types.Rank -> Html Msg
 viewLeague rank =
     div
         [ A.style "display" "inline-flex"
-        , A.style "padding" "11px"
+        , A.style "padding" "10px"
         , A.style "justifyContent" "center"
         , A.style "marginBottom" "auto"
         ]
